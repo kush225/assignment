@@ -5,7 +5,7 @@
 The first thing to do is to clone the repository:
 
 ```bash
-$ git clone https://github.com/kushagra/sample-django-app.git
+$ git clone https://github.com/kush225/assignment
 $ cd tortoise
 ```
 
