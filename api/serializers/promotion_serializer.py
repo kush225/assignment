@@ -21,3 +21,10 @@ class PromotionSerializer(serializers.ModelSerializer):
 				raise serializers.ValidationError("Valid till date can't be less/equal than valid from.")		
 
 		return data
+
+
+class PromotionListSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Promotion
+		fields =  ['id', 'plan', 'valid_from', 'valid_till', 'max_users_allowed', 'users_enrolled', 'benefitPercentage', 'is_active']
+

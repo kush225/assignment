@@ -8,6 +8,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.db.models import F
 from rest_framework.response import Response
+from django.db import transaction
 
 
 class CustomerGoalsList(generics.ListAPIView, generics.CreateAPIView):
@@ -34,17 +35,18 @@ class CustomerGoalsList(generics.ListAPIView, generics.CreateAPIView):
 			data = serializer.validated_data
 			plan =  data['plan']
 			promotion = Promotion.objects.filter(plan_id = plan.pk, is_active=True)
-			promotion.update(users_enrolled=F('users_enrolled')+1)
-			promotion = promotion.last()
+			prom_obj = promotion.last()
 			depositedAmount = data['selectedAmount']/ data['selectedTenure'] 
-			benefitPercentage = promotion.benefitPercentage 
-			serializer.save(
-				user=self.request.user, 
-				depositedAmount=depositedAmount, 
-				promotion=promotion,
-				benefitPercentage=benefitPercentage,
-				benefitType= plan.benefitType,
-				brand_id=plan.brand_id )
+			benefitPercentage = prom_obj.benefitPercentage 
+			with transaction.atomic():
+				promotion.update(users_enrolled=F('users_enrolled')+1)
+				serializer.save(
+					user=self.request.user, 
+					depositedAmount=depositedAmount, 
+					promotion=prom_obj,
+					benefitPercentage=benefitPercentage,
+					benefitType= plan.benefitType,
+					brand_id=plan.brand_id )
 
 		def get_queryset(self, request): 
 			brand = Brand.objects.filter(user_id=request.user.id)

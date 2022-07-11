@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export DJANGO_SETTINGS_MODULE=tortoise.settings
+export DJANGO_SECRET_KEY="django-insecure-8o_^k6^bo)&dfw*x$5%%xa^qkv^^lzhd3#12h#_%au2y9o2o(m"
 
 echo "---------------------------------"
 echo "making migrations..."

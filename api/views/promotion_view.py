@@ -1,20 +1,16 @@
-from api.models.brands import Brand
 from api.models.promotions import Promotion
 from api.permissions.userPermission import IsBrandUser
-from api.serializers.promotion_serializer import PromotionSerializer
-from django.http import Http404
-from rest_framework.views import APIView
+from api.serializers.promotion_serializer import PromotionSerializer, PromotionListSerializer
 from rest_framework.response import Response
 from rest_framework import status, generics
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 class PromotionList(generics.ListAPIView):
 	"""
 	List all promotion of the plan
 	"""
 	model = Promotion
-	serializer_class = PromotionSerializer
+	serializer_class = PromotionListSerializer
 	queryset = Promotion.objects.all()
 	permission_classes = [IsBrandUser]	
 
@@ -25,7 +21,7 @@ class PromotionList(generics.ListAPIView):
 	@swagger_auto_schema(tags=["Brand"])
 	def get(self, request, *args, **kwargs):
 		instance = self.get_queryset(request)
-		serializer = PromotionSerializer(instance, many=True)
+		serializer = PromotionListSerializer(instance, many=True)
 		return Response(serializer.data)
 
 	
